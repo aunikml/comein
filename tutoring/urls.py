@@ -8,6 +8,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # Include authentication URLs
     path('workspace/', include('workspace.urls')),
+     path('forum/', include('forum.urls')),
 ]
 
 if settings.DEBUG:

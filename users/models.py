@@ -30,9 +30,12 @@ class User(AbstractUser, PermissionsMixin):
         error_messages={
             "unique": _("A user with that username already exists."),
         },
-        default='default_user'
-
+        default='default_user'  # You can change this default if needed
     )
+
+    password_changed = models.BooleanField(default=False)
+    first_name = models.CharField(_("first name"), max_length=150, blank=True)
+    last_name = models.CharField(_("last name"), max_length=150, blank=True)
 
     def __str__(self):
         return self.username
