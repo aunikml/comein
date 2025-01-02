@@ -78,7 +78,7 @@
                 <div class="card mt-3">
                     <div class="card-body">
                        <h5 class="card-title">Workspace for {{ workspace.student.first_name }}</h5>
-                        <a href="{% url 'profile_view' %}?student_id={{ workspace.student.id }}" class="btn btn-secondary mb-2">View {{ workspace.student.first_name }}'s Profile</a>
+                       <a href="{% url 'profile_view' %}?student_id={{ workspace.student.id }}" class="btn btn-secondary mb-2">View {{ workspace.student.first_name }}'s Profile</a>
                         {% if workspace.chapters.all %}
                             <div class="progress mb-3" style="height: 20px;">
                                 {% for chapter in workspace.chapters.all %}

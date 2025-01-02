@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'workspace',
-    'forum'
+    'forum',
+    'email_notification'
+    
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -132,3 +136,26 @@ MEDIA_URL = '/media/'
 # login redirect 
 AUTH_USER_MODEL = 'users.User' 
 LOGIN_REDIRECT_URL = '/users/dashboard/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+
+# For production, configure a real email backend:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'your_email_host'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your_email@example.com'
+# EMAIL_HOST_PASSWORD = 'your_email_password'
+
+
+# CKEditor configuration
+# CKEDITOR_UPLOAD_PATH = "uploads/"  # Optional: Configure upload path for images
+
+# For increased security, you can set specific configuration options
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # Or customize the toolbar
+        'height': 300,
+        'width': '100%',
+    },
+}

@@ -1,9 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManager, UnicodeUsernameValidator
+from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.validators import UnicodeUsernameValidator 
+
 
 class User(AbstractUser, PermissionsMixin):
     USER_TYPE_CHOICES = [
@@ -26,16 +28,19 @@ class User(AbstractUser, PermissionsMixin):
         help_text=_(
             "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
-        validators=[UnicodeUsernameValidator()],
+        validators=[
+            UnicodeUsernameValidator()
+        ],
         error_messages={
             "unique": _("A user with that username already exists."),
         },
-        default='default_user'  # You can change this default if needed
+        default='default_user'
     )
 
     password_changed = models.BooleanField(default=False)
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
+    email = models.EmailField(_("email address"), blank=True, unique=True) # Email Field added
 
     def __str__(self):
         return self.username

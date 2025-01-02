@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from email_notification.tasks import send_assignment_notification, send_submission_notification, send_submission_update_notification
 
 class Workspace(models.Model):
     student = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='workspace')
@@ -44,3 +47,16 @@ class Submission(models.Model):
     
     def __str__(self):
         return f"Submission for {self.chapter.chapter_name} (Draft {self.draft_number}) "
+    
+@receiver(post_save, sender=Workspace)
+def notify_workspace_assignment(sender, instance, created, **kwargs):
+    if instance.mentor and instance.student:
+        send_assignment_notification(instance)
+
+@receiver(post_save, sender=Submission)
+def notify_new_submission(sender, instance, created, **kwargs):
+    if created:
+        send_submission_notification(instance)
+    else:
+        send_submission_update_notification(instance)
+    

@@ -29,25 +29,30 @@ def profile_edit(request):
 @login_required
 def profile_view(request):
     User = get_user_model()  # Get the custom user model
+    profile = None  # Default value
+    is_own_profile = False
 
     # Check if a student_id was passed in the query parameters
     student_id = request.GET.get('student_id')
-    if student_id:
+
+    if student_id:  # Viewing a student's profile (for mentors)
         try:
             # Get the student's user object
             student_user = User.objects.get(pk=student_id)
-            # Get the student's profile
-            profile = get_object_or_404(UserProfile, user=student_user)
-        except (User.DoesNotExist, UserProfile.DoesNotExist):
+            # Get or create the student's profile
+            profile, created = UserProfile.objects.get_or_create(user=student_user)
+        except User.DoesNotExist:
             # Handle the case where the student or profile doesn't exist
-            raise Http404("Student or profile not found")
-    else:
+            raise Http404("Student not found")
+
+    else:  # Viewing own profile
         # Show the current user's profile
         if not isinstance(request.user, User):
             raise ValueError(f"Invalid user object: {request.user} ({type(request.user)})")
         profile, created = UserProfile.objects.get_or_create(user=request.user)
+        is_own_profile = True
 
-    return render(request, 'users/profile_view.html', {'profile': profile, 'dashboard': False})
+    return render(request, 'users/profile_view.html', {'profile': profile, 'is_own_profile': is_own_profile})
 
 @login_required
 def dashboard(request):

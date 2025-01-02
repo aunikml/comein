@@ -6,6 +6,7 @@ from django.forms import ModelForm
 User = get_user_model()
 
 class UserProfileForm(ModelForm):
+
     class Meta:
         model = UserProfile
         fields = ['bio', 'cv', 'preferred_research_methods', 'image']
@@ -21,7 +22,7 @@ class UserProfileForm(ModelForm):
 class UserCreationAdminForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
         super(UserCreationAdminForm, self).__init__(*args, **kwargs)
