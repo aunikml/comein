@@ -114,8 +114,3 @@ def password_change(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'registration/password_change_form.html', {'form': form})
 
-def user_logout(request):
-    """Logs out the user and redirects to the login page."""
-    logout(request)
-    messages.success(request, 'Logged out successfully.')
-    return redirect('responseupload/login')  # Redirect to the login URL by name

@@ -136,7 +136,7 @@ MEDIA_URL = '/media/'
 
 # login redirect 
 AUTH_USER_MODEL = 'users.User' 
-LOGIN_REDIRECT_URL = '/users/dashboard/'
+LOGOUT_REDIRECT_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 
