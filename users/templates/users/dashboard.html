@@ -5,104 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-      <style>
-            .progress-bar-green {
-            background-color: #28a745; /* Bootstrap's success green */
-             }
-         </style>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .card {
+            border: none;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .progress {
+            height: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-green {
+            background-color: #28a745;
+        }
+        .btn-success, .btn-info {
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .list-group-item {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .list-group-item:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
 <body>
-  {% load custom_filters %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+{% load custom_filters %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
-      <a class="navbar-brand" href="#">Tutoring App</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav ms-auto">
-           <li class="nav-item">
-             <a class="nav-link" href="{% url 'profile_view' %}">My Profile</a>
-           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-               {% if user.is_authenticated %}
-                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-               {% else %}
-                  <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
-               {% endif %}
+        <a class="navbar-brand" href="#">Tutoring App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile_view' %}">My Profile</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
             </ul>
-          </li>
-        </ul>
-      </div>
+        </div>
     </div>
-  </nav>
-  <div class="container mt-5">
-    <h1>Welcome, {{ request.user.first_name }}!</h1>
+</nav>
+<div class="container mt-5">
+    <h1 class="mb-4">Welcome, {{ request.user.first_name }}!</h1>
     <p><strong>Role:</strong> {{ request.user.get_user_type_display }}</p>
-    <form method="post" action="{% url 'logout' %}" class="d-inline">
-        {% csrf_token %}
-    </form>
-        {% if request.user.workspace %}
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h5 class="card-title">Your Workspace</h5>
-                    {% if request.user.workspace.chapters.all %}
-                        <div class="progress mb-3" style="height: 20px;">
-                            {% for chapter in request.user.workspace.chapters.all %}
-                            <div
-                                class="progress-bar {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} bg-secondary {% endif %}"
-                                role="progressbar"
-                                style="width: {{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%;"
-                                aria-valuenow="{{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                            >
-                            {{chapter.chapter_name}} - {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} Completed {% else %} In-Progress {% endif %}
-                            </div>
-                           {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>No Chapters Added</p>
-                    {% endif %}
-                    <a href="{% url 'workspace_view' student_id=request.user.id %}" class="btn btn-success">Go to Workspace</a>
-                </div>
-            </div>
-        {% endif %}
 
-       {% if request.user.mentored_workspaces.all %}
-            {% for workspace in request.user.mentored_workspaces.all %}
-                <div class="card mt-3">
+    <div class="row">
+        <div class="col-md-6">
+            {% if request.user.workspace %}
+                <div class="card mb-4">
                     <div class="card-body">
-                       <h5 class="card-title">Workspace for {{ workspace.student.first_name }}</h5>
-                       <a href="{% url 'profile_view' %}?student_id={{ workspace.student.id }}" class="btn btn-secondary mb-2">View {{ workspace.student.first_name }}'s Profile</a>
-                        {% if workspace.chapters.all %}
-                            <div class="progress mb-3" style="height: 20px;">
-                                {% for chapter in workspace.chapters.all %}
-                                    <div class="progress-bar {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} bg-secondary {% endif %}"
-                                          role="progressbar"
-                                        style="width: {{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%;"
-                                          aria-valuenow="{{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}"
-                                          aria-valuemin="0"
-                                          aria-valuemax="100">
-                                         {{chapter.chapter_name}} - {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} Completed {% else %} In-Progress {% endif %}
+                        <h5 class="card-title">Your Workspace</h5>
+                        {% if request.user.workspace.chapters.all %}
+                            <div class="progress mb-3">
+                                {% for chapter in request.user.workspace.chapters.all %}
+                                    <div
+                                        class="progress-bar {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} bg-secondary {% endif %}"
+                                        role="progressbar"
+                                        style="width: {{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%;"
+                                        aria-valuenow="{{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        {{ chapter.chapter_name }} - {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} Completed {% else %} In-Progress {% endif %}
                                     </div>
-                                {% empty %}
-                                     <div class="progress-bar bg-secondary" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> No Chapters yet</div>
                                 {% endfor %}
-                           </div>
+                            </div>
                         {% else %}
                             <p>No Chapters Added</p>
                         {% endif %}
-                         <a href="{% url 'workspace_view' student_id=workspace.student.id %}" class="btn btn-info">Go to Workspace</a>
+                        <a href="{% url 'workspace_view' student_id=request.user.id %}" class="btn btn-success">Go to Workspace</a>
                     </div>
                 </div>
-            {% endfor %}
-       {% endif %}
+            {% endif %}
+
+            {% if request.user.mentored_workspaces.all %}
+                {% for workspace in request.user.mentored_workspaces.all %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Workspace for {{ workspace.student.first_name }}</h5>
+                            <a href="{% url 'profile_view' %}?student_id={{ workspace.student.id }}" class="btn btn-secondary mb-3">View {{ workspace.student.first_name }}'s Profile</a>
+                            {% if workspace.chapters.all %}
+                                <div class="progress mb-3">
+                                    {% for chapter in workspace.chapters.all %}
+                                        <div
+                                            class="progress-bar {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} bg-secondary {% endif %}"
+                                            role="progressbar"
+                                            style="width: {{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%;"
+                                            aria-valuenow="{{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">
+                                            {{ chapter.chapter_name }} - {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} Completed {% else %} In-Progress {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p>No Chapters Added</p>
+                            {% endif %}
+                            <a href="{% url 'workspace_view' student_id=workspace.student.id %}" class="btn btn-info">Go to Workspace</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Your Forums</h5>
+                    <ul class="list-group">
+                        {% for forum in user_forums %}
+                            <li class="list-group-item">
+                                <a href="{% url 'forum_detail' forum_id=forum.id %}" class="text-decoration-none">{{ forum.title }}</a>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">Not participating in any forums yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

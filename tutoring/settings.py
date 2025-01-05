@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'workspace',
     'forum',
     'email_notification'
+  
     
     
     
@@ -147,15 +148,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For developm
 # EMAIL_HOST_USER = 'your_email@example.com'
 # EMAIL_HOST_PASSWORD = 'your_email_password'
 
-
-# CKEditor configuration
-# CKEDITOR_UPLOAD_PATH = "uploads/"  # Optional: Configure upload path for images
-
-# For increased security, you can set specific configuration options
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',  # Or customize the toolbar
-        'height': 300,
-        'width': '100%',
-    },
-}

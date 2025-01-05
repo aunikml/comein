@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from .forms import UserProfileForm
 from .models import UserProfile
 from workspace.models import Workspace
+from forum.models import Forum
+from django.http import Http404
+from django.contrib.auth.forms import PasswordChangeForm
 
 @login_required
 def profile_edit(request):
@@ -29,13 +32,12 @@ def profile_edit(request):
 @login_required
 def profile_view(request):
     User = get_user_model()  # Get the custom user model
-    profile = None  # Default value
-    is_own_profile = False
+    profile = None
+    is_own_profile = False # Initialize to False
 
     # Check if a student_id was passed in the query parameters
     student_id = request.GET.get('student_id')
-
-    if student_id:  # Viewing a student's profile (for mentors)
+    if student_id:
         try:
             # Get the student's user object
             student_user = User.objects.get(pk=student_id)
@@ -44,13 +46,12 @@ def profile_view(request):
         except User.DoesNotExist:
             # Handle the case where the student or profile doesn't exist
             raise Http404("Student not found")
-
-    else:  # Viewing own profile
+    else:
         # Show the current user's profile
         if not isinstance(request.user, User):
             raise ValueError(f"Invalid user object: {request.user} ({type(request.user)})")
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        is_own_profile = True
+        is_own_profile = True  # Set to True when viewing own profile
 
     return render(request, 'users/profile_view.html', {'profile': profile, 'is_own_profile': is_own_profile})
 
@@ -85,9 +86,36 @@ def dashboard(request):
                         'is_completed': approved_submissions.exists(),
                     }
 
+    # Get the forums the user is participating in
+    user_forums = Forum.objects.filter(participants=request.user)
+
     context = {
       'student_workspace_progress': student_workspace_progress,
       'mentor_workspaces_progress': mentor_workspaces_progress,
+      'user_forums': user_forums,
     }
 
     return render(request, 'users/dashboard.html', context)
+
+@login_required
+def password_change(request):
+    User = get_user_model()
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important, to keep the user logged in
+            request.user.password_changed = True
+            request.user.save()
+            return redirect('dashboard')  # Redirect to some success page
+        else:
+            print("Form Errors:", form.errors)
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'registration/password_change_form.html', {'form': form})
+
+def user_logout(request):
+    """Logs out the user and redirects to the login page."""
+    logout(request)
+    messages.success(request, 'Logged out successfully.')
+    return redirect('responseupload/login')  # Redirect to the login URL by name

@@ -9,6 +9,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Include authentication URLs
     path('workspace/', include('workspace.urls')),
     path('forum/', include('forum.urls')),
+   
+
       
 ]
 
