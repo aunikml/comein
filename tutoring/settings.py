@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'workspace',
     'forum',
+    'tinymce',
     'email_notification'
   
     

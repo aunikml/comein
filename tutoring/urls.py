@@ -7,10 +7,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # Include authentication URLs
+    path('tinymce/', include('tinymce.urls')),
     path('workspace/', include('workspace.urls')),
     path('forum/', include('forum.urls')),
-   
-
+    
       
 ]
 

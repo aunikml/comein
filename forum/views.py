@@ -4,7 +4,7 @@ from .models import Forum, Post, Reply, ResourceLink
 from .forms import PostForm, ReplyForm, ForumForm
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 
 @login_required
 def forum_list(request):
@@ -71,6 +71,7 @@ def forum_detail(request, forum_id):
         'posts': posts,
         'form': form,
         'reply_form': reply_form,
+        'is_moderator':request.user == forum.moderator 
     }
     return render(request, 'forum/forum_detail.html', context)
 
@@ -87,14 +88,18 @@ def post_detail(request, post_id):
             reply.post = post
             reply.created_by = request.user
             reply.save()
+            # Send notification
+            send_forum_notification(request, forum, reply)
             return redirect('post_detail', post_id=post.id)
 
     context = {
         'post': post,
         'replies': replies,
         'reply_form': reply_form,
+        'is_moderator': request.user == forum.moderator
     }
     return render(request, 'forum/post_detail.html', context)
+
     
 @login_required
 def create_forum(request):
@@ -111,3 +116,33 @@ def create_forum(request):
     else:
         form = ForumForm()
     return render(request, 'forum/create_forum.html', {'form': form})
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    forum = post.forum
+
+    if request.user != forum.moderator:
+        raise PermissionDenied("You are not authorized to delete this post.")
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('forum_detail', forum_id=forum.id)
+    else:
+        return render(request, 'discussion_forum/confirm_delete.html', {'object': post, 'type': 'post'})
+
+
+@login_required
+def delete_reply(request, reply_id):
+    reply = get_object_or_404(Reply, id=reply_id)
+    post = reply.post
+    forum = post.forum
+
+    if request.user != forum.moderator:
+        raise PermissionDenied("You are not authorized to delete this reply.")
+
+    if request.method == 'POST':
+        reply.delete()
+        return redirect('post_detail', post_id=post.id)
+    else:
+        return render(request, 'discussion_forum/confirm_delete.html', {'object': reply, 'type': 'reply'})
