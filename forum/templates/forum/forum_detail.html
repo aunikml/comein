@@ -8,83 +8,129 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom, #f5f7fa, #e8ecef);
+            line-height: 1.6;
         }
         .forum-header {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .post-card {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             background: white;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
         }
         .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
         .reply {
-            margin-left: 2.5rem;
-            border-left: 3px solid #e9ecef;
-            padding-left: 1.5rem;
+            margin-left: 3rem;
+            border-left: 4px solid #e2e8f0;
+            padding-left: 2rem;
             position: relative;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
         }
         .reply:before {
             content: "";
             position: absolute;
-            left: -3px;
+            left: -4px;
             top: 0;
             height: 100%;
-            width: 3px;
-            background: #e9ecef;
+            width: 4px;
+            background: linear-gradient(to bottom, #3b82f6, #93c5fd);
         }
         .user-badge {
-            background-color: #e9ecef;
-            border-radius: 20px;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.85rem;
+            background: #e0f2fe;
+            border-radius: 50px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            color: #1e40af;
+            font-weight: 500;
         }
         .btn-success {
-            background-color: #28a745;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
+            background: #10b981;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            transition: background 0.2s ease;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .form-control:focus {
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            outline: none;
         }
         .collapse-form {
-            background-color: #f8f9fa;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            border-bottom: none;
+            padding: 1.5rem 2rem;
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .context-alert {
+            background: #eff6ff;
+            color: #1e40af;
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 1rem;
+            padding: 1rem;
+            font-size: 0.95rem;
+            border-left: 4px solid #3b82f6;
+        }
+        .btn-outline-secondary {
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-secondary:hover {
+            background: #f1f5f9;
         }
     </style>
 </head>
 <body>
+    {% include 'includes/navbar.html' %}
     <div class="container py-5">
         <!-- Forum Header -->
         <div class="forum-header">
-            <h1 class="display-5 mb-3">{{ forum.title }}</h1>
-            <p class="lead mb-0">{{ forum.description }}</p>
-            <div class="mt-3 d-flex align-items-center gap-2">
+            <h1 class="display-4 mb-3">{{ forum.title }}</h1>
+            <p class="lead mb-4">{{ forum.description }}</p>
+            <div class="d-flex align-items-center gap-3">
                 <span class="user-badge">
                     <i class="fas fa-user-circle"></i>
                     {{ forum.created_by.first_name }} {{ forum.created_by.last_name }}
@@ -95,7 +141,7 @@
         </div>
 
         <!-- Posts Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
             <h3 class="mb-0">Discussion</h3>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPostModal">
                 <i class="fas fa-plus"></i> New Post
@@ -113,20 +159,20 @@
                     <div class="modal-body">
                         <form method="post">
                             {% csrf_token %}
-                            <div class="mb-3">
-                                <label class="form-label">Title</label>
+                            <div class="mb-4">
+                                <label class="form-label fw-medium">Title</label>
                                 {{ form.title }}
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Content</label>
+                            <div class="mb-4">
+                                <label class="form-label fw-medium">Content</label>
                                 {{ form.content }}
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Context</label>
+                            <div class="mb-4">
+                                <label class="form-label fw-medium">Context</label>
                                 {{ form.context }}
                             </div>
-                            <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <div class="d-flex justify-content-end gap-3">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-success">Post</button>
                             </div>
                         </form>
@@ -140,11 +186,11 @@
             {% for post in posts %}
             <div class="col-12">
                 <div class="post-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
                             <div>
-                                <h4 class="card-title mb-1">{{ post.title }}</h4>
-                                <div class="d-flex align-items-center gap-2 text-muted">
+                                <h4 class="card-title mb-2">{{ post.title }}</h4>
+                                <div class="d-flex align-items-center gap-3 text-muted">
                                     <span class="user-badge">
                                         <i class="fas fa-user"></i>
                                         {{ post.created_by.first_name }} {{ post.created_by.last_name }}
@@ -153,63 +199,45 @@
                                     <small>{{ post.created_at|date:"F j, Y" }}</small>
                                 </div>
                             </div>
-                            {% if is_moderator or user == post.created_by %}
-                            <form method="post" action="{% url 'delete_post' post_id=post.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link text-danger" 
-                                    onclick="return confirm('Are you sure you want to delete this post?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                            {% endif %}
                         </div>
 
-                        <p class="card-text mb-3">{{ post.content }}</p>
-                        <div class="alert alert-info py-2 px-3" style="font-size: 0.9rem;">
+                        <p class="card-text mb-4">{{ post.content }}</p>
+                        <div class="context-alert">
                             <i class="fas fa-info-circle me-2"></i>
                             Context: {{ post.get_context_display }}
                         </div>
 
                         <!-- Replies Section -->
-                        <div class="mt-4">
+                        <div class="mt-5">
                             {% for reply in post.replies.all %}
-                            <div class="reply mb-3">
-                                <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="reply">
+                                <div class="d-flex align-items-center gap-3 mb-2">
                                     <span class="user-badge">
                                         <i class="fas fa-user"></i>
                                         {{ reply.created_by.first_name }} {{ reply.created_by.last_name }}
                                     </span>
                                     <small class="text-muted">{{ reply.created_at|date:"M j, Y" }}</small>
-                                    {% if is_moderator %}
-                                    <form method="post" action="{% url 'delete_reply' reply_id=reply.id %}" class="ms-auto">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-link text-danger p-0 ms-2" 
-                                            onclick="return confirm('Delete this reply?')">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </form>
-                                    {% endif %}
                                 </div>
                                 <p class="card-text mb-0">{{ reply.content }}</p>
                             </div>
                             {% empty %}
-                            <div class="text-center py-3 text-muted">
+                            <div class="text-center py-4 text-muted">
                                 No replies yet. Be the first to respond!
                             </div>
                             {% endfor %}
                         </div>
 
                         <!-- Reply Form -->
-                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" 
+                        <button class="btn btn-outline-secondary btn-sm mt-3" type="button" data-bs-toggle="collapse" 
                             data-bs-target="#replyForm-{{ post.id }}">
                             <i class="fas fa-reply me-2"></i>Add Reply
                         </button>
-                        <div class="collapse mt-3" id="replyForm-{{ post.id }}">
+                        <div class="collapse mt-4" id="replyForm-{{ post.id }}">
                             <div class="collapse-form">
                                 <form method="post" action="{% url 'forum_detail' forum_id=forum.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="post_id" value="{{ post.id }}">
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         {{ reply_form.content }}
                                     </div>
                                     <div class="d-flex justify-content-end">

@@ -1,0 +1,75 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="#">CoMEIn II BRAC IED</a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link text-white px-3" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white px-3" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              My Profile
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item py-2" href="{% url 'profile_view' %}">View Profile</a></li>
+              {% if user.is_authenticated %}
+                <li><a class="dropdown-item py-2" href="{% url 'login' %}">Logout</a></li>
+              {% else %}
+                <li><a class="dropdown-item py-2" href="{% url 'login' %}">Login</a></li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <style>
+    .navbar {
+      background: linear-gradient(90deg, #212529 0%, #343a40 100%);
+      padding: 1rem 0;
+    }
+  
+    .navbar-brand {
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      transition: color 0.2s ease;
+    }
+  
+    .navbar-brand:hover {
+      color: #adb5bd !important;
+    }
+  
+    .nav-link {
+      font-size: 1rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+  
+    .nav-link:hover {
+      color: #adb5bd !important;
+    }
+  
+    .dropdown-menu {
+      background-color: #343a40;
+      margin-top: 0.5rem;
+      border-radius: 0.5rem;
+    }
+  
+    .dropdown-item {
+      color: #ffffff;
+      font-weight: 400;
+    }
+  
+    .dropdown-item:hover {
+      background-color: #495057;
+      color: #ffffff;
+    }
+  
+    .navbar-toggler:focus {
+      box-shadow: none;
+    }
+  </style>

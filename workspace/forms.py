@@ -1,5 +1,6 @@
 from django import forms
 from .models import Resource, Chapter, Submission
+from django.forms import ModelForm
 
 
 class ResourceForm(forms.ModelForm):
@@ -8,19 +9,22 @@ class ResourceForm(forms.ModelForm):
         fields = ['title', 'file']
 
     def __init__(self, *args, **kwargs):
-        super(ResourceForm, self).__init__(*args, **kwargs)
-        self.fields['title'].widget.attrs.update({'class': 'form-control'})
-        self.fields['file'].widget.attrs.update({'class': 'form-control'})
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
 
 class ChapterForm(forms.ModelForm):
+    deadline = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         model = Chapter
         fields = ['chapter_name', 'deadline']
-    
+
     def __init__(self, *args, **kwargs):
-        super(ChapterForm, self).__init__(*args, **kwargs)
-        self.fields['chapter_name'].widget.attrs.update({'class': 'form-control'})
-        self.fields['deadline'].widget.attrs.update({'class': 'form-control'})
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
 
 from django import forms
 from .models import Resource, Chapter, Submission
