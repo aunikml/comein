@@ -160,3 +160,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For developm
 
 django_heroku.settings(locals())
 
+
