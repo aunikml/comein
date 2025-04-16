@@ -40,11 +40,11 @@
         .card-header {
             background-color: #ffffff;
             border-bottom: 1px solid #e9ecef;
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: 12px 12px 0 0;
         }
         .card-body {
-            padding: 1.5rem;
+            padding: 1.25rem;
         }
         .btn-primary {
             background-color: #007bff;
@@ -60,16 +60,18 @@
         .btn-success {
             background-color: #28a745;
             border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
             font-weight: 500;
         }
         .btn-success:hover {
             background-color: #218838;
         }
         .btn-info, .btn-outline-primary, .btn-danger, .btn-outline-secondary {
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
             font-weight: 500;
         }
         .btn-actions {
@@ -83,9 +85,10 @@
             padding: 0.5rem 0;
         }
         .dropdown-item {
-            padding: 0.75rem 1.25rem;
+            padding: 0.5rem 1rem;
             border-radius: 6px;
             margin: 0.25rem 0.5rem;
+            font-size: 0.875rem;
         }
         .dropdown-item:hover {
             background-color: #f1f3f5;
@@ -97,19 +100,20 @@
         }
         .modal-header {
             border-bottom: 1px solid #e9ecef;
-            padding: 1.25rem;
+            padding: 1rem;
         }
         .modal-body {
-            padding: 1.5rem;
+            padding: 1.25rem;
         }
         .list-group-item {
             border: none;
-            padding: 0.75rem 1.25rem;
+            padding: 0.75rem 1rem;
             font-weight: 500;
             color: #007bff;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.875rem;
         }
         .list-group-item:hover {
             background-color: #f8f9fa;
@@ -118,37 +122,90 @@
             height: 10px;
             border-radius: 5px;
             background-color: #e9ecef;
-            margin: 1rem 0;
+            margin: 0.75rem 0;
+            position: relative;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+            background-color: #fd7e14; /* Orange for incomplete */
         }
         .progress-bar-green {
-            background-color: #28a745;
-            transition: width 0.3s ease;
+            background-color: #20c997; /* Brighter green for completed */
+        }
+        .progress-bar-striped {
+            background-image: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.15) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 1rem 1rem;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        .progress-label {
+            position: absolute;
+            top: -1.5rem;
+            left: 0;
+            font-size: 0.75rem;
+            color: #6c757d;
         }
         .table-submission {
+            width: 100%;
+            max-width: 100%;
             border-collapse: separate;
-            border-spacing: 0 0.5rem;
-        }
-        .table-submission td, .table-submission th {
-            vertical-align: middle;
-            padding: 0.75rem;
-            background-color: #ffffff;
-            border: none;
+            border-spacing: 0 0.4rem;
+            font-size: 0.85rem;
         }
         .table-submission th {
-            color: #6c757d;
+            background-color: #343a40;
+            color: #ffffff;
             font-weight: 600;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .table-submission tr {
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 0.75rem;
+            border-bottom: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
         }
         .table-submission td {
+            padding: 0.5rem 0.75rem;
+            background-color: #ffffff;
             color: #1a1a1a;
+            vertical-align: middle;
+            border: none;
+        }
+        .table-submission tr {
+            border-radius: 6px;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s ease;
+        }
+        .table-submission tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table-submission tr:hover {
+            background-color: #f1f3f5;
         }
         .table-submission a {
             text-decoration: none;
+            color: #007bff;
+        }
+        .table-submission a:hover {
+            text-decoration: underline;
+        }
+        .table-submission .truncate {
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        @keyframes progress-bar-stripes {
+            0% { background-position-x: 1rem; }
         }
         @media (max-width: 768px) {
             h1 {
@@ -158,7 +215,24 @@
                 font-size: 1.25rem;
             }
             .btn {
-                padding: 0.5rem 1rem;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .progress {
+                height: 8px;
+            }
+            .progress-label {
+                font-size: 0.7rem;
+                top: -1.25rem;
+            }
+            .table-submission {
+                font-size: 0.8rem;
+            }
+            .table-submission th, .table-submission td {
+                padding: 0.4rem 0.6rem;
+            }
+            .table-submission .truncate {
+                max-width: 100px;
             }
         }
     </style>
@@ -306,76 +380,99 @@
                             </div>
                         </div>
 
-                        <div class="progress">
-                            <div class="progress-bar {% if chapter_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} bg-secondary {% endif %}"
+                        <div class="progress" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ chapter_progress|getkey:chapter.id|getkey:'status_text' }}">
+                            <div class="progress-bar {% if chapter_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} progress-bar-striped {% endif %}"
                                  role="progressbar"
                                  style="width: {{ chapter_progress|getkey:chapter.id|getkey:'progress_percentage' }}%;"
                                  aria-valuenow="{{ chapter_progress|getkey:chapter.id|getkey:'progress_percentage' }}"
                                  aria-valuemin="0"
                                  aria-valuemax="100">
                             </div>
+                            <span class="progress-label">{{ chapter_progress|getkey:chapter.id|getkey:'progress_percentage' }}%</span>
                         </div>
 
                         <div class="card-body">
                             {% if is_mentor %}
                                 <h5 class="card-title">Submissions</h5>
-                                <table class="table table-submission">
-                                    <thead>
-                                        <tr>
-                                            <th>Draft #</th>
-                                            <th>Submitted On</th>
-                                            <th>File</th>
-                                            <th>Review</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for submission in chapter.submissions.all %}
-                                        <tr>
-                                            <td>{{ submission.draft_number }}</td>
-                                            <td>{{ submission.submission_date|date:"F j, Y" }}</td>
-                                            <td><a href="{{ submission.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Download</a></td>
-                                            <td><a href="{% url 'review_submission' submission_id=submission.id %}" class="btn btn-sm btn-info">Review</a></td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="4">No submissions yet</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% else %}
-                                <h5 class="card-title">Your Submissions</h5>
-                                <table class="table table-submission">
-                                    <thead>
-                                        <tr>
-                                            <th>Draft #</th>
-                                            <th>Status</th>
-                                            <th>Comment</th>
-                                            <th>Annotated File</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for submission in chapter_submissions|getkey:chapter.id %}
+                                <div class="table-responsive">
+                                    <table class="table table-submission">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10%;">Draft #</th>
+                                                <th style="width: 20%;">Submitted On</th>
+                                                <th style="width: 20%;">File</th>
+                                                <th style="width: 20%;">Annotated File</th>
+                                                <th style="width: 30%;">Review</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for submission in chapter.submissions.all %}
                                             <tr>
                                                 <td>{{ submission.draft_number }}</td>
-                                                <td>{{ submission.get_status_display }}</td>
-                                                <td>{{ submission.comment|default:"-" }}</td>
-                                                <td>
+                                                <td>{{ submission.submission_date|date:"F j, Y" }}</td>
+                                                <td class="truncate"><a href="{{ submission.file.url }}" target="_blank">{{ submission.file.name|basename }}</a></td>
+                                                <td class="truncate">
                                                     {% if submission.annotated_file %}
-                                                        <a href="{{ submission.annotated_file.url }}" target="_blank">Download</a>
+                                                        <a href="{{ submission.annotated_file.url }}" target="_blank">{{ submission.annotated_file.name|basename }}</a>
                                                     {% else %}
                                                         -
                                                     {% endif %}
                                                 </td>
+                                                <td><a href="{% url 'review_submission' submission_id=submission.id %}" class="btn btn-sm btn-info">Review</a></td>
                                             </tr>
-                                        {% empty %}
+                                            {% empty %}
                                             <tr>
-                                                <td colspan="4">No submissions yet</td>
+                                                <td colspan="5">No submissions yet</td>
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <a href="{% url 'submit_chapter' chapter_id=chapter.id %}" class="btn btn-sm btn-success">Submit Draft</a>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <h5 class="card-title">Your Submissions</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-submission">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10%;">Draft #</th>
+                                                <th style="width: 20%;">Submitted File</th>
+                                                <th style="width: 20%;">Submission Date</th>
+                                                <th style="width: 15%;">Status</th>
+                                                <th style="width: 20%;">Comment</th>
+                                                <th style="width: 15%;">Annotated File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for submission in chapter_submissions|getkey:chapter.id %}
+                                                <tr>
+                                                    <td>{{ submission.draft_number }}</td>
+                                                    <td class="truncate">
+                                                        {% if submission.file %}
+                                                            <a href="{{ submission.file.url }}" target="_blank">{{ submission.file.name|basename }}</a>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ submission.submission_date|date:"F j, Y, g:i a" }}</td>
+                                                    <td>{{ submission.get_status_display }}</td>
+                                                    <td class="truncate">{{ submission.comment|default:"-" }}</td>
+                                                    <td>
+                                                        {% if submission.annotated_file %}
+                                                            <a href="{{ submission.annotated_file.url }}" target="_blank">{{ submission.annotated_file.name|basename }}</a>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="6">No submissions yet</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <a href="{% url 'submit_chapter' chapter_id=chapter.id %}" class="btn btn-sm btn-success mt-2">Submit Draft</a>
                             {% endif %}
                         </div>
                     </div>
@@ -404,6 +501,11 @@
                     var form = document.querySelector('#editChapterModal .edit-chapter-form');
                     form.action = '/workspace/chapter/' + chapterId + '/edit/';
                 });
+            });
+            // Initialize Bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>

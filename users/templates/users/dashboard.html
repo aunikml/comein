@@ -11,14 +11,12 @@
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
-            --success-color: #27ae60;
             --light-bg: #f8f9fa;
         }
 
         body {
             font-family: 'Inter', sans-serif;
         }
-        
 
         .navbar {
             background: var(--primary-color) !important;
@@ -45,8 +43,44 @@
             border-bottom: 1px solid #eee;
         }
 
-        .progress-bar-success {
-            background-color: var(--success-color);
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            margin: 0.75rem 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease;
+            background-color: #fd7e14; /* Orange for incomplete */
+        }
+
+        .progress-bar-green {
+            background-color: #20c997; /* Green for completed */
+        }
+
+        .progress-bar-striped {
+            background-image: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.15) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 1rem 1rem;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+
+        .progress-label {
+            position: absolute;
+            top: -1.5rem;
+            left: 0;
+            font-size: 0.75rem;
+            color: #6c757d;
         }
 
         .card {
@@ -62,18 +96,6 @@
 
         .chapter-progress {
             margin-bottom: 1.5rem;
-        }
-
-        .chapter-progress .progress {
-            height: 25px;
-            border-radius: 12px;
-        }
-
-        .progress-label {
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-            font-weight: 500;
         }
 
         .forum-list .list-group-item {
@@ -97,6 +119,20 @@
             justify-content: center;
             margin-right: 1rem;
             color: white;
+        }
+
+        @keyframes progress-bar-stripes {
+            0% { background-position-x: 1rem; }
+        }
+
+        @media (max-width: 768px) {
+            .progress {
+                height: 8px;
+            }
+            .progress-label {
+                font-size: 0.7rem;
+                top: -1.25rem;
+            }
         }
     </style>
 </head>
@@ -156,19 +192,16 @@
             <div class="chapter-progress">
               <div class="d-flex justify-content-between mb-2">
                 <span class="progress-label">{{ chapter.chapter_name }}</span>
-                <span class="text-muted small">
-                  {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %}
-                    Completed
-                  {% else %}
-                    {{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%
-                  {% endif %}
-                </span>
               </div>
-              <div class="progress">
-                <div class="progress-bar {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-success {% else %} bg-secondary {% endif %}" 
+              <div class="progress" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ student_workspace_progress|getkey:chapter.id|getkey:'status_text' }}">
+                <div class="progress-bar {% if student_workspace_progress|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} progress-bar-striped {% endif %}" 
                      role="progressbar" 
-                     style="width: {{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%">
+                     style="width: {{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%"
+                     aria-valuenow="{{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
                 </div>
+                <span class="progress-label">{{ student_workspace_progress|getkey:chapter.id|getkey:'progress_percentage' }}%</span>
               </div>
             </div>
             {% endfor %}
@@ -200,19 +233,16 @@
               <div class="chapter-progress">
                 <div class="d-flex justify-content-between mb-2">
                   <span class="progress-label">{{ chapter.chapter_name }}</span>
-                  <span class="text-muted small">
-                    {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %}
-                      Completed
-                    {% else %}
-                      {{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%
-                    {% endif %}
-                  </span>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} progress-bar-success {% else %} bg-secondary {% endif %}" 
+                <div class="progress" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'status_text' }}">
+                  <div class="progress-bar {% if mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'is_completed' %} progress-bar-green {% else %} progress-bar-striped {% endif %}" 
                        role="progressbar" 
-                       style="width: {{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%">
+                       style="width: {{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%"
+                       aria-valuenow="{{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100">
                   </div>
+                  <span class="progress-label">{{ mentor_workspaces_progress|getkey:workspace.id|getkey:chapter.id|getkey:'progress_percentage' }}%</span>
                 </div>
               </div>
               {% endfor %}
@@ -268,14 +298,15 @@
   <div class="toast-container position-fixed bottom-0 end-0 p-3">
     {% for message in messages %}
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000" data-bs-autohide="false">
-          <strong class="me-auto">Notification</strong>
-          <small class="text-muted">{{ message.tags }}</small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-          {{ message }}
-        </div>
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <small class="text-muted">{{ message.tags }}</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
+      <div class="toast-body">
+        {{ message }}
+      </div>
+    </div>
     {% endfor %}
   </div>
 
@@ -284,6 +315,11 @@
   <script>
     $(document).ready(function(){
       $('.toast').toast('show');
+      // Initialize tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
     });
   </script>
 </body>

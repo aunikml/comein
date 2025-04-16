@@ -27,15 +27,16 @@ def workspace_view(request, student_id):
 
     for chapter in chapters:
         submissions = chapter.submissions.filter(student=workspace.student).order_by('-submission_date')
+        approved_submissions = submissions.filter(status='approved')
         chapter_submissions[chapter.id] = submissions
-
-        approved_submissions = chapter.submissions.filter(student=workspace.student, status='approved')
-        progress_percentage = 0
-        if submissions.count() > 0:
-            progress_percentage = (approved_submissions.count() / submissions.count()) * 100
+        # Progress: 100% if any submission is approved, else 0%
+        progress_percentage = 100 if approved_submissions.exists() else 0
+        is_completed = progress_percentage == 100
+        status_text = f'{approved_submissions.count()} draft{"s" if approved_submissions.count() != 1 else ""} approved' if approved_submissions.exists() else 'No drafts approved'
         chapter_progress[chapter.id] = {
             'progress_percentage': progress_percentage,
-            'is_completed': approved_submissions.exists(),
+            'is_completed': is_completed,
+            'status_text': status_text
         }
 
     if request.method == 'POST':
@@ -61,7 +62,6 @@ def workspace_view(request, student_id):
                     context['errors'] = str(e)
                     return render(request, 'workspace/workspace_page.html', context)
 
-
     context = {
         'workspace': workspace,
         'resources': resources,
@@ -74,7 +74,6 @@ def workspace_view(request, student_id):
     }
 
     return render(request, 'workspace/workspace_page.html', context)
-
 
 
 @login_required
@@ -117,6 +116,7 @@ def review_submission(request, submission_id):
         review_form = SubmissionReviewForm(instance=submission)
 
     return render(request, 'workspace/review_submission.html', {'review_form': review_form, 'submission': submission})
+
 
 @login_required
 def edit_chapter(request, chapter_id):
@@ -165,10 +165,11 @@ def delete_chapter(request, chapter_id):
                 chapter.delete()
                 return redirect('workspace_view', student_id=workspace.student.id)
         except Exception as e:
-            #Handle potential errors during deletion
-            return render(request, 'workspace/delete_chapter.html', {'chapter': chapter, 'errors': str(e)}) #pass the error message to template
+            # Handle potential errors during deletion
+            return render(request, 'workspace/delete_chapter.html', {'chapter': chapter, 'errors': str(e)})
 
     return render(request, 'workspace/delete_chapter.html', {'chapter': chapter, 'workspace': workspace})
+
 
 @login_required
 def edit_resource(request, resource_id):

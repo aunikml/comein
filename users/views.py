@@ -3,10 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from .forms import UserProfileForm
 from .models import UserProfile
-from workspace.models import Workspace
+from workspace.models import Workspace, Chapter, Submission
 from forum.models import Forum
 from django.http import Http404
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
 
 @login_required
 def profile_edit(request):
@@ -62,37 +63,35 @@ def dashboard(request):
 
     if hasattr(request.user, 'workspace') and request.user.workspace:
         for chapter in request.user.workspace.chapters.all():
-            approved_submissions = chapter.submissions.filter(student=request.user, status='approved')
             submissions = chapter.submissions.filter(student=request.user)
-            progress_percentage = 0
-            if submissions.count() > 0 :
-                progress_percentage = (approved_submissions.count() / submissions.count()) * 100
+            approved_submissions = submissions.filter(status='approved')
+            progress_percentage = 100 if approved_submissions.exists() else 0
             student_workspace_progress[chapter.id] = {
-              'progress_percentage': progress_percentage,
-              'is_completed': approved_submissions.exists(),
+                'progress_percentage': progress_percentage,
+                'is_completed': approved_submissions.exists(),
+                'status_text': f'{approved_submissions.count()} draft{"s" if approved_submissions.count() != 1 else ""} approved' if approved_submissions.exists() else 'No drafts approved'
             }
 
     if hasattr(request.user, 'mentored_workspaces') and request.user.mentored_workspaces.all():
         for workspace in request.user.mentored_workspaces.all():
-              mentor_workspaces_progress[workspace.id] = {}
-              for chapter in workspace.chapters.all():
-                  approved_submissions = chapter.submissions.filter(student=workspace.student, status='approved')
-                  submissions = chapter.submissions.filter(student=workspace.student)
-                  progress_percentage = 0
-                  if submissions.count() > 0 :
-                        progress_percentage = (approved_submissions.count() / submissions.count()) * 100
-                  mentor_workspaces_progress[workspace.id][chapter.id] = {
-                        'progress_percentage': progress_percentage,
-                        'is_completed': approved_submissions.exists(),
-                    }
+            mentor_workspaces_progress[workspace.id] = {}
+            for chapter in workspace.chapters.all():
+                submissions = chapter.submissions.filter(student=workspace.student)
+                approved_submissions = submissions.filter(status='approved')
+                progress_percentage = 100 if approved_submissions.exists() else 0
+                mentor_workspaces_progress[workspace.id][chapter.id] = {
+                    'progress_percentage': progress_percentage,
+                    'is_completed': approved_submissions.exists(),
+                    'status_text': f'{approved_submissions.count()} draft{"s" if approved_submissions.count() != 1 else ""} approved' if approved_submissions.exists() else 'No drafts approved'
+                }
 
     # Get the forums the user is participating in
     user_forums = Forum.objects.filter(participants=request.user)
 
     context = {
-      'student_workspace_progress': student_workspace_progress,
-      'mentor_workspaces_progress': mentor_workspaces_progress,
-      'user_forums': user_forums,
+        'student_workspace_progress': student_workspace_progress,
+        'mentor_workspaces_progress': mentor_workspaces_progress,
+        'user_forums': user_forums,
     }
 
     return render(request, 'users/dashboard.html', context)
@@ -113,4 +112,3 @@ def password_change(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'registration/password_change_form.html', {'form': form})
-
