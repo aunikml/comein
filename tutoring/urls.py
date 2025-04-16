@@ -10,6 +10,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('workspace/', include('workspace.urls')),
     path('forum/', include('forum.urls')),
+    path('scheduler/', include('scheduler.urls')),  # Add scheduler URLs
     
       
 ]

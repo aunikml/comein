@@ -10,10 +10,50 @@
     {% include 'includes/navbar.html' %}
 
     <div class="container mt-5 p-4">
-        <h1>Edit Profile</h1>
+        <h1 class="mb-4">Edit Profile</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            <div class="mb-3">
+                <label for="id_bio" class="form-label">Bio</label>
+                {{ form.bio }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_cv" class="form-label">CV</label>
+                {{ form.cv }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_preferred_research_methods" class="form-label">Preferred Research Method</label>
+                {{ form.preferred_research_methods }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_image" class="form-label">Profile Image</label>
+                {{ form.image }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_area_of_specialization" class="form-label">Area of Specialization</label>
+                {{ form.area_of_specialization }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_research_interest" class="form-label">Research Interest</label>
+                {{ form.research_interest }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_publications" class="form-label">Publications</label>
+                {{ form.publications }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_conferences_workshops" class="form-label">Conferences/Workshops</label>
+                {{ form.conferences_workshops }}
+            </div>
+
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>

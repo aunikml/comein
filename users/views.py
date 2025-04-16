@@ -8,6 +8,7 @@ from forum.models import Forum
 from django.http import Http404
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from scheduler.forms import CalendlyLinkForm
 
 @login_required
 def profile_edit(request):
@@ -60,6 +61,8 @@ def profile_view(request):
 def dashboard(request):
     student_workspace_progress = {}
     mentor_workspaces_progress = {}
+    mentor_profile = None
+    calendly_form = None
 
     if hasattr(request.user, 'workspace') and request.user.workspace:
         for chapter in request.user.workspace.chapters.all():
@@ -84,14 +87,24 @@ def dashboard(request):
                     'is_completed': approved_submissions.exists(),
                     'status_text': f'{approved_submissions.count()} draft{"s" if approved_submissions.count() != 1 else ""} approved' if approved_submissions.exists() else 'No drafts approved'
                 }
+            # Get mentor's profile for mentored workspace
+            if workspace.mentor == request.user:
+                mentor_profile = UserProfile.objects.get(user=workspace.mentor)
 
     # Get the forums the user is participating in
     user_forums = Forum.objects.filter(participants=request.user)
+
+    # Initialize Calendly form for mentors
+    if request.user.user_type == 'mentor':
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        calendly_form = CalendlyLinkForm(instance=profile)
 
     context = {
         'student_workspace_progress': student_workspace_progress,
         'mentor_workspaces_progress': mentor_workspaces_progress,
         'user_forums': user_forums,
+        'mentor_profile': mentor_profile,
+        'calendly_form': calendly_form,
     }
 
     return render(request, 'users/dashboard.html', context)

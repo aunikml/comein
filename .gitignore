@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media
+staticfiles
+.env
+
+# If you're using Heroku
+*.sqlite3
+*.pyc
+
+# Environment
+.env
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Heroku
+*.orig
+*.bak
+
+# pip-tools
+*.txt~
+pip-log.txt
+
+# Migrations (optional, if you don’t want them in version control)
+**/migrations/*.py
+**/migrations/*.pyc
+!**/migrations/__init__.py

@@ -6,17 +6,23 @@ from django.forms import ModelForm
 User = get_user_model()
 
 class UserProfileForm(ModelForm):
-
     class Meta:
         model = UserProfile
-        fields = ['bio', 'cv', 'preferred_research_methods', 'image']
+        fields = [
+            'bio',
+            'cv',
+            'preferred_research_methods',
+            'image',
+            'area_of_specialization',
+            'research_interest',
+            'publications',
+            'conferences_workshops',
+        ]
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
-        self.fields['bio'].widget.attrs.update({'class': 'form-control'})
-        self.fields['cv'].widget.attrs.update({'class': 'form-control'})
-        self.fields['preferred_research_methods'].widget.attrs.update({'class': 'form-control'})
-        self.fields['image'].widget.attrs.update({'class': 'form-control'})
+        for field_name in self.fields:
+            self.fields[field_name].widget.attrs.update({'class': 'form-control'})
 
 
 class UserCreationAdminForm(forms.ModelForm):

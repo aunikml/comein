@@ -49,6 +49,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True)
     cv = models.FileField(upload_to='cvs/', blank=True, null=True)
+    
     RESEARCH_METHOD_CHOICES = [
         ('quantitative', 'Quantitative'),
         ('qualitative', 'Qualitative'),
@@ -60,10 +61,17 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
+    
     image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    area_of_specialization = models.TextField(blank=True, null=True)
+    research_interest = models.TextField(blank=True, null=True)
+    publications = models.TextField(blank=True, null=True)
+    conferences_workshops = models.TextField(blank=True, null=True)
+    calendly_link = models.URLField(blank=True, null=True)  # New field for Calendly link
 
     def __str__(self):
         return f"{self.user.first_name}'s Profile"
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
