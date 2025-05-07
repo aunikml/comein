@@ -1,9 +1,5 @@
 ##Preffered DB: Postgres Sql
 
-Below is a comprehensive guideline for installing and setting up your Django-based "comein" system on an Ubuntu virtual machine using Python 3.11. This guide is formatted to serve as a README file for your GitHub repository. It assumes the user has basic familiarity with Ubuntu and command-line operations. The instructions cover setting up the environment, installing dependencies, and running the application.
-
----
-
 # ComeIn - Installation Guide for Ubuntu VM
 
 Welcome to **ComeIn**, a Django-based system for [briefly describe the purpose of your system, e.g., "managing user interactions and data"]. This guide provides step-by-step instructions to set up and run the ComeIn application on an Ubuntu virtual machine using Python 3.11.
